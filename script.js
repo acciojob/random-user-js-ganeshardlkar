@@ -1,54 +1,40 @@
-//your code here
-const fullNameId = document.getElementById("fullNameId");
-const imageId = document.getElementById("imageId");
-const ageId = document.getElementById("ageId");
-const emailId = document.getElementById("emailId");
-const phoneId = document.getElementById("phoneId");
-const result = document.getElementById("result");
-const getUser = document.getElementById("getUser");
-
-ageId.addEventListener("click", showAge);
-emailId.addEventListener("click", showEmail);
-phoneId.addEventListener("click", showPhone);
-getUser.addEventListener("click", showUser);
-
-let fullName = "";
-let image = "";
-let age = "";
-let email = "";
-let phone = "";
-let user = {};
-
-function showUser() {
-  fetch("https://randomuser.me/api/")
-    .then((response) => response.json())
-    .then((data) => {
-      user = data.results[0];
-      fullName = data.results[0].name.first + " " + data.results[0].name.last;
-      image = data.results[0].picture.large;
-      console.log(image);
-      console.log(fullName);
-      console.log(user);
-      imageId.innerHTML = `<img src="${data.results[0].picture.large}" alt="" />`;
-      fullNameId.innerText = fullName;
+async function fetchdata() {
+  const url = "https://randomuser.me/api/";
+  const data = await fetch(url);
+  const response = await data.json();
+  // console.log(response);
+  return response.results[0];
+}
+const showuser = () => {
+  fetchdata().then((data) => {
+    console.log(data.name.first, data.name.last);
+    console.log(data.picture.large);
+    document.getElementById(
+      "img-box"
+    ).innerHTML = `<img src="${data.picture.large}">`;
+    document.getElementById(
+      "username"
+    ).innerHTML = `${data.name.first} ${data.name.last}`;
+    const ageButton = document.getElementById("age");
+    ageButton.addEventListener("click", () => {
+      console.log(data.dob.age);
+      document.getElementById("output").innerHTML = `<h1>${data.dob.age}<h1>`;
     });
-}
-showUser();
+    const EmailButton = document.getElementById("email");
+    EmailButton.addEventListener("click", () => {
+      console.log(data.email);
+      document.getElementById("output").innerHTML = `<h1>${data.email}<h1>`;
+    });
+    const PhoneButton = document.getElementById("phone");
+    PhoneButton.addEventListener("click", () => {
+      console.log(data.phone);
+      document.getElementById("output").innerHTML = `<h1>${data.phone}<h1>`;
+    });
+  });
+};
 
-function showAge() {
-  age = user.dob.age;
-  console.log(age);
-  result.innerText = age;
-}
-
-function showEmail() {
-  email = user.email;
-  console.log(email);
-  result.innerText = email;
-}
-
-function showPhone() {
-  phone = user.phone;
-  console.log(phone);
-  result.innerText = phone;
-}
+showuser();
+const newUser =document.getElementById("getUser");
+newUser.addEventListener("click", () => {
+  showuser();
+});
